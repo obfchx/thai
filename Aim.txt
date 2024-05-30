@@ -1,0 +1,178 @@
+    repeat wait() until game.Players
+    repeat wait() until game.Players.LocalPlayer
+    repeat wait() until game.ReplicatedStorage
+    repeat wait() until game.ReplicatedStorage:FindFirstChild("Remotes");
+    repeat wait() until game.Players.LocalPlayer:FindFirstChild("PlayerGui");
+    repeat wait() until game.Players.LocalPlayer.PlayerGui:FindFirstChild("Main");
+    repeat wait() until game:GetService("Players")
+    repeat wait() until game:GetService("Players").LocalPlayer.Character:FindFirstChild("Energy")
+    
+        Select_Size_Fov = 200;
+        Show_Fov = false;
+        Aimbot Skill Fov = true;
+        
+     spawn(function()
+        local gg = getrawmetatable(game)
+        local old = gg.__namecall
+        setreadonly(gg,false)
+        gg.__namecall = newcclosure(function(...)
+            local method = getnamecallmethod()
+            local args = {...}
+            if tostring(method) == "FireServer" then
+                if tostring(args[1]) == "RemoteEvent" then
+                    if tostring(args[2]) ~= "true" and tostring(args[2]) ~= "false" then
+                        if UseSkillMasteryDevilFruit then
+                            args[2] = PositionSkillMasteryDevilFruit
+                            return old(unpack(args))
+                        elseif AimSkillNearest then
+                            args[2] = AimBotSkillPosition
+                            return old(unpack(args))
+                        end
+                    end
+                end
+            end
+            return old(...)
+        end)
+    end)
+    
+    spawn(function()
+        game:GetService("RunService").RenderStepped:Connect(function()
+            if UseGun then
+                pcall(function()
+                    for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                        if v.Name == Ms then
+                            local args = {
+                                [1] = "TAP",
+                                [2] = v.HumanoidRootPart.Position
+                            }
+                            
+                            game:GetService("Players").LocalPlayer.Character.Humanoid:FindFirstChild("Soul Guitar"):InvokeServer(unpack(args))
+                            local args = {
+                                [1] = v.HumanoidRootPart.Position,
+                                [2] = v.HumanoidRootPart
+                            }
+                            game:GetService("Players").LocalPlayer.Character[SelectToolWeaponGun].RemoteFunctionShoot:InvokeServer(unpack(args))
+                        end
+                    end
+                end)
+            end
+        end)
+    end)
+    
+ spawn(function()
+        game:GetService("RunService").RenderStepped:Connect(function()
+            if UseGunKillPlayer then
+                pcall(function()
+                    for i,v in pairs(game:GetService("Workspace").Characters:GetChildren()) do
+                        if v.Name == _G.Select_Player then
+                            local args = {
+                                [1] = v.HumanoidRootPart.Position,
+                                [2] = v.HumanoidRootPart
+                            }
+                            game:GetService("Players").LocalPlayer.Character[SelectToolWeaponGun].RemoteFunctionShoot:InvokeServer(unpack(args))
+                        end
+                    end
+                end)
+            end
+        end)
+    end)
+    
+    local lp = game:GetService('Players').LocalPlayer
+    local mouse = lp:GetMouse()
+    spawn(function()
+        while wait() do
+            if _G.Aimbot_Skill_Fov then
+                pcall(function()
+                    local MaxDist, Closest = math.huge
+                    for i,v in pairs(game:GetService("Players"):GetChildren()) do 
+                        local Head = v.Character:FindFirstChild("HumanoidRootPart")
+                        local Pos, Vis = game.Workspace.CurrentCamera.WorldToScreenPoint(game.Workspace.CurrentCamera, Head.Position)
+                        local MousePos, TheirPos = Vector2.new(mouse.X, mouse.Y), Vector2.new(Pos.X, Pos.Y)
+                        local Dist = (TheirPos - MousePos).Magnitude
+                        if Dist < MaxDist and Dist <= _G.Select_Size_Fov and v.Name ~= game.Players.LocalPlayer.Name then
+                            MaxDist = Dist
+                            _G.Aim_Players = v
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+    
+    spawn(function()
+        local gg = getrawmetatable(game)
+        local old = gg.__namecall
+        setreadonly(gg,false)
+        gg.__namecall = newcclosure(function(...)
+            local method = getnamecallmethod()
+            local args = {...}
+            if tostring(method) == "FireServer" then
+                if tostring(args[1]) == "RemoteEvent" then
+                    if tostring(args[2]) ~= "true" and tostring(args[2]) ~= "false" then
+                        if _G.Aimbot_Skill_Fov then
+                            args[2] = _G.Aim_Players.Character.HumanoidRootPart.Position
+                            return old(unpack(args))
+                        end
+                    end
+                end
+            end
+            return old(...)
+        end)
+    end)
+    
+     local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ZPS-HUB-WL/ui/main/UI"))()
+    local Wait = library.subs.Wait
+    
+    local PepsisWorld = library:CreateWindow({
+        Name = "Light Hub - Main",
+        Themeable = {
+        Info = ""
+        }
+    })
+    
+    local MainTab = PepsisWorld:CreateTab({
+        Name = "General"
+    })
+    
+    local MainSection = MainTab:CreateSection({
+        Name = "Main",
+        Side = "Left"
+    })
+    
+    
+    LegitBountySection:AddSlider({
+        Name = "Select Size Fov",
+        Flag = "Select_Size_Fov",
+        Value = _G.Settings.Select_Size_Fov,
+        Min = 1,
+        Max = 1000,
+        Textbox = true,
+        Format = function(value)
+            _G.Select_Size_Fov = value
+            _G.Settings.Select_Size_Fov = value
+            saveSettings()
+            return "Size Fov : " .. tostring(value)
+        end
+    })
+    
+    LegitBountySection:AddToggle{
+        Name = "Show Fov",
+        Flag = "Show_Fov",
+        Value = _G.Settings.Show_Fov,
+        Callback  = function(value)
+            _G.Show_Fov = value
+            _G.Settings.Show_Fov = value
+            saveSettings()
+        end
+    }
+    
+    LegitBountySection:AddToggle{
+        Name = "Aimbot Skill Fov",
+        Flag = "Aimbot_Skill_Fov",
+        Value = _G.Settings.Aimbot_Skill_Fov,
+        Callback  = function(value)
+            _G.Aimbot_Skill_Fov = value
+            _G.Settings.Aimbot_Skill_Fov = value
+            saveSettings()
+        end
+    }
